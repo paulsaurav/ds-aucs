@@ -65,6 +65,13 @@ export const questions: Question[] = [
     topic: "Linked lists",
     lang: "C++",
   },
+  {
+    n: 9,
+    slug: "linked-list-delete",
+    prompt: "Write a program that uses functions to perform the following operations on singly linked List for deletion of an element from the beginning/end/ anywhere.",
+    topic: "Linked lists",
+    lang: "C++",
+  },
 ];
 
 export function getQuestion(slug: string) {

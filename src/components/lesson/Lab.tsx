@@ -43,7 +43,11 @@ export default function Lab({
     () => {
       const { tl, stops: extra = [] } = build(root.current!);
       const ends = steps.map((s, k) => S[k] + s.w);
-      const all = [...new Set([0, ...extra, ...ends].map((t) => Math.round(t * 1000) / 1000))].sort((a, b) => a - b);
+      // A frame must never land mid-animation: push each stop past any tween already running through it.
+      const spans = tl.getChildren(false, true, true).map((c) => [c.startTime(), c.startTime() + c.totalDuration()] as const);
+      const settle = (s: number) =>
+        spans.reduce((acc, [a, b]) => (a < s - 1e-3 && b > acc ? Math.max(acc, b) : acc), s);
+      const all = [...new Set([0, ...extra, ...ends].map((t) => Math.round(settle(t) * 1000) / 1000))].sort((a, b) => a - b);
       player.current = { tl, stops: all, map: timeMap(tl) };
       setStops(all);
       // After a rebuild (resize), land on the frame we were on.

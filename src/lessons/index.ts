@@ -8,6 +8,7 @@ import SparseLesson from "./sparse/SparseLesson";
 import CircularQueueLesson from "./circular-queue/CircularQueueLesson";
 import LinkedListLesson from "./linked-list/LinkedListLesson";
 import ListInsertLesson from "./list-insert/ListInsertLesson";
+import ListDeleteLesson from "./list-delete/ListDeleteLesson";
 
 /** slug → lesson. Add one entry per question as it is built. */
 export const lessons: Record<string, ComponentType<{ q: Question }>> = {
@@ -19,4 +20,5 @@ export const lessons: Record<string, ComponentType<{ q: Question }>> = {
   "circular-queue": CircularQueueLesson,
   "singly-linked-list": LinkedListLesson,
   "linked-list-insert": ListInsertLesson,
+  "linked-list-delete": ListDeleteLesson,
 };

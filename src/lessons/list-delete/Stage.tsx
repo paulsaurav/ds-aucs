@@ -1,7 +1,7 @@
 "use client";
 
 import { gsap } from "@/lib/gsap";
-import { C as COL, delta, helpers, labTimeline, linkPath, mid, relRect, stepStarts, totalWeight, type Build, type Rect } from "@/components/lesson/kit";
+import { delta, helpers, labTimeline, linkPath, mid, relRect, stepStarts, totalWeight, type Build, type Rect } from "@/components/lesson/kit";
 import Lab from "@/components/lesson/Lab";
 import { CodePanel, Cond, Odo, Reg } from "@/components/lesson/parts";
 import { L, NODES, OUT1, PROGRAM, STEPS } from "./data";
@@ -39,7 +39,7 @@ const COND = [
   <Cond key="d2d" text={`${ADDR[D]} != NULL`} ok />,
   <Cond key="d2n" text="NULL != NULL" ok={false} />,
 ];
-const ARROWS = ["hA", "hB", "AB", "BC", "CD", "DE", "BD", "ref"];
+const ARROWS = ["hA", "hB", "AB", "BC", "CD", "DE", "BD", "ref", "DX"];
 
 const build: Build = (el) => {
   const all = (s: string) => Array.from(el.querySelectorAll<HTMLElement>(s));
@@ -80,6 +80,7 @@ const build: Build = (el) => {
   path("BC").setAttribute("d", link(B, Cc));
   path("CD").setAttribute("d", link(Cc, D));
   path("DE").setAttribute("d", link(D, E));
+  path("DX").setAttribute("d", link(D, E)); // the same link, drawn dashed while it dangles
   path("BD").setAttribute("d", link(B, D));
   {
     const h = relRect(zone, row.head);
@@ -102,7 +103,8 @@ const build: Build = (el) => {
   gsap.set(nodes, { autoAlpha: 0, scale: 0.6 });
   gsap.set([...flys, ...freed, ...all(".lnode__n")], { autoAlpha: 0 });
   all(".lnode").forEach((_, k) => gsap.set(nexts(k)[0], { autoAlpha: 1 }));
-  gsap.set(all(".larrow"), { drawSVG: "0%", autoAlpha: 0 });
+  gsap.set(all(".larrow:not(.larrow--dangle)"), { drawSVG: "0%", autoAlpha: 0 });
+  gsap.set(path("DX"), { autoAlpha: 0 });
   gsap.set([fMain, fCall, dangling, cost, condReg], { autoAlpha: 0 });
   gsap.set(fCall, { y: -12 });
   gsap.set(badge("p"), { autoAlpha: 0, ...badgeAt("p", A) });
@@ -263,20 +265,20 @@ const build: Build = (el) => {
     }
     stops.push(a + 0.3);
   });
-  let a = t + 0.78 + 3 * 0.3;
+  const a = t + 0.78 + 3 * 0.3;
   hl(L.deDelete, a);
   free(E, a + 0.03);
-  tl.to(path("DE"), { stroke: COL.signal, strokeDasharray: "6 5", duration: 0.1 }, a + 0.1);
+  hide(path("DE"), a + 0.1, 0.02);
+  show(path("DX"), a + 0.1, 0.06);
   show(dangling, a + 0.15);
   stops.push(a + 0.35);
   hl(L.deNull, a + 0.4);
   setNext(D, 1, 2, a + 0.42);
-  erase("DE", a + 0.44);
+  hide(path("DX"), a + 0.44, 0.12);
   hide([dangling, badge("t"), condReg], a + 0.5);
 
   // 5 · deleteAt(head, 1)
   t = S[4];
-  hide(path("DE"), t, 0.01);
   type([L.da, L.daZero, L.daZero + 1, L.daZero + 2, L.daZero + 3, L.daT, L.daFor, L.daHop, L.daCheck, L.daCheck + 1, L.daCheck + 2, L.daCheck + 3, L.daP, L.daBypass, L.daDelete, L.daEnd], t, 0.02);
   type([L.delAt], t + 0.36);
   hl(L.delAt, t + 0.42);
@@ -362,7 +364,7 @@ export default function Stage() {
             {ARROWS.map((n) => (
               <path
                 key={n}
-                className={`larrow${n.startsWith("h") ? " larrow--ptr" : ""}${n === "ref" ? " larrow--ref" : ""}`}
+                className={`larrow${n.startsWith("h") ? " larrow--ptr" : ""}${n === "ref" ? " larrow--ref" : ""}${n === "DX" ? " larrow--dangle" : ""}`}
                 data-ptr={n}
                 markerEnd="url(#ld-head)"
               />
