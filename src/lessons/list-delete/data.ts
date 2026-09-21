@@ -144,7 +144,7 @@ export const STEPS: Step[] = [
     note: "new takes memory from the heap. delete returns it. Each new needs exactly one delete.",
   },
   {
-    w: 2.3,
+    w: 2.7,
     kicker: "Line 64",
     title: "display before deleting",
     body: ["A quick walk from head so we can compare later: 10 -> 20 -> 30 -> 40 -> 50 -> NULL."],

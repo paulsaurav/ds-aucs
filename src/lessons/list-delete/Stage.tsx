@@ -39,6 +39,8 @@ const COND = [
   <Cond key="d2d" text={`${ADDR[D]} != NULL`} ok />,
   <Cond key="d2n" text="NULL != NULL" ok={false} />,
 ];
+/** One display hop: print, then move t. Long enough for t to land before the next hop. */
+const HOP = 0.42;
 const ARROWS = ["hA", "hB", "AB", "BC", "CD", "DE", "BD", "ref", "DX"];
 
 const build: Build = (el) => {
@@ -157,7 +159,7 @@ const build: Build = (el) => {
   /** display(): t walks the given nodes and prints them into output line `line`. */
   const displayWalk = (walk: number[], flights: { x: number; y: number }[], outBase: number, tBase: number, condBase: number, at: number) => {
     walk.forEach((k, n) => {
-      const a = at + n * 0.3;
+      const a = at + n * HOP;
       hl(L.dispFor, a);
       setCond(condBase + n, a);
       hl(L.dispPrint, a + 0.05);
@@ -169,9 +171,9 @@ const build: Build = (el) => {
       setRow("t", tBase + n + 1, a + 0.23);
       const nextK = walk[n + 1];
       moveBadge("t", nextK === undefined ? nullAfter(k) : badgeAt("t", nextK), a + 0.23);
-      stops.push(a + 0.3);
+      stops.push(a + HOP);
     });
-    const e = at + walk.length * 0.3;
+    const e = at + walk.length * HOP;
     setCond(condBase + walk.length, e);
     hl(L.dispNull, e + 0.05);
     show(outs[outBase + walk.length], e + 0.07, 0.05);
